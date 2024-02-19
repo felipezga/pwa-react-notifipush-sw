@@ -32,6 +32,12 @@ function App() {
     const permission = await Notification.requestPermission();
 
     if (permission === "granted") {
+      
+      /*const newSw = await navigator.serviceWorker.register(
+        './firebase-messaging-sw'
+      );*/
+      // /homepage/basename/firebase-messaging-sw.js'
+
       const token = await getToken(messaging, {
         vapidKey: VITE_APP_VAPID_KEY,
       });
