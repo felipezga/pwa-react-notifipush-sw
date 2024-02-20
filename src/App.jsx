@@ -15,6 +15,7 @@ import boopSfx from '../src/assets/notificacion.mp3';
 
 function App() {
   const [count, setCount] = useState(0);
+  const [tokenf, setTokenf] = useState("Sin Token");
   const { VITE_APP_VAPID_KEY } = "BCqca8VdQFQNno84FMNe6Su_ZOflnmxA48egixE92FSWrUGdMFnpqst8kSf0Anw9g0-o2PAZAInGJUfDcdmFdpo";
 
   //const [play] = useSound('/meow.mp3');
@@ -36,6 +37,17 @@ function App() {
       /*const newSw = await navigator.serviceWorker.register(
         './firebase-messaging-sw'
       );*/
+      /*if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register( '/pwa-react-notifipush-sw/firebase-messaging-sw.js' )
+          .then(function (registration) {
+            console.log("Registration successful, scope is:", registration.scope);
+          })
+          .catch(function (err) {
+            console.log("Service worker registration failed, error:", err);
+          });
+      }*/
+      console.log("SWORKER");
       // /homepage/basename/firebase-messaging-sw.js'
 
       const token = await getToken(messaging, {
@@ -45,6 +57,7 @@ function App() {
 
       //We can send token to server
       console.log("Token generated : ", token);
+      setTokenf(token);
     } else if (permission === "denied") {
       //notifications are blocked
       alert("You denied for the notification");
@@ -91,6 +104,7 @@ channel.addEventListener('message', event => {
         </a>
       </div>
       <h1>Vite + React</h1>
+      <h3> { tokenf }</h3>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
