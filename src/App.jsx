@@ -28,10 +28,14 @@ function App() {
   };
 
 
+  console.log("requestPermission");
   async function requestPermission() {
+
+    console.log("NOTIFICATION API");
     //requesting permission using Notification API
     const permission = await Notification.requestPermission();
 
+    console.log("EMPEZAMOS PERMISO");
     if (permission === "granted") {
       
       /*const newSw = await navigator.serviceWorker.register(
@@ -61,6 +65,9 @@ function App() {
     } else if (permission === "denied") {
       //notifications are blocked
       alert("You denied for the notification");
+    }else{
+      alert("No funcion");
+      console.log("no funciona");
     }
   }
 
@@ -92,6 +99,65 @@ channel.addEventListener('message', event => {
     play();
 });
 
+function isIOS() {
+  const browserInfo = navigator.userAgent.toLowerCase();
+  
+  console.log(browserInfo)
+  if (browserInfo.match('iphone') || browserInfo.match('ipad')) {
+    console.log("true");
+    return true;
+  }
+  if (['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)) {
+    console.log("true");
+    return true;
+  } 
+  console.log("false");
+  return false;
+}
+
+
+const iosClick = async() => {
+  console.log('this is:', this);
+
+  console.log("click permiso ios");
+
+  if(isIOS()){
+
+    const token = await getToken(messaging, {
+      vapidKey: VITE_APP_VAPID_KEY,
+    });
+    /*let token = await messaging.getToken({
+      vapidKey: VITE_APP_VAPID_KEY,
+    });*/
+    console.log("Token generated x button: ", token);
+      setTokenf(token);
+
+  } else{
+    let permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      console.log("Notification permission granted. Requesting for token.");
+      
+      const token = await getToken(messaging, {
+        vapidKey: VITE_APP_VAPID_KEY,
+      });
+      /*let token = await messaging.getToken({
+        vapidKey: VITE_APP_VAPID_KEY,
+      });*/
+      console.log("Token generated x button: ", token);
+        setTokenf(token);
+      // do something with the FCM token
+    } else {
+      console.log("Notification permission denied");
+      // Handle denied permission
+    }
+    
+
+  }
+  
+  
+};
+
+
   return (
     <>
       <div>
@@ -103,8 +169,14 @@ channel.addEventListener('message', event => {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Vite + React PWA Notificacion Push con firebase v.14</h1>
       <h3> { tokenf }</h3>
+      <div className="card">
+        <button onClick={ iosClick }>
+          Solicitar permiso iOS
+        </button>
+        
+      </div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
